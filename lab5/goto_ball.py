@@ -57,6 +57,9 @@ async def run(robot: cozmo.robot.Robot):
     robot.world.image_annotator.add_annotator('battery', BatteryAnnotator)
     robot.world.image_annotator.add_annotator('ball', BallAnnotator)
 
+    #cozmo.robot.LiftPosition(cozmo.robot.MAX_LIFT_HEIGHT)
+    robot.move_lift(3)
+    await robot.set_head_angle(cozmo.util.degrees(0)).wait_for_completed()
 
     try:
 
@@ -73,8 +76,23 @@ async def run(robot: cozmo.robot.Robot):
             #set annotator ball
             BallAnnotator.ball = ball
 
-            ## TODO: ENTER YOUR SOLUTION HERE
-
+            ## If the ball is none turn 5 degrees and look again, if it sees a ball at it takes up 2/3 the view its
+            ## considered close enough to find it, if it sees a ball but its far away make slight adjustment relative to
+            ## center of the image and center of found ball then move forward some
+            if ball is None:
+                await robot.turn_in_place(cozmo.util.degrees(5)).wait_for_completed()
+            elif ball[2] > opencv_image.shape[0]/3:
+                await robot.drive_straight(cozmo.util.distance_mm(50), cozmo.util.speed_mmps(50)).wait_for_completed()
+                robot.move_lift(-3)
+                await robot.say_text("I found the ball", True).wait_for_completed()
+                break
+            else:
+                [h,w] = opencv_image.shape
+                if w/2 - ball[0] > 10:
+                    await robot.turn_in_place(cozmo.util.degrees(5)).wait_for_completed()
+                elif w/2 - ball[0] < -10:
+                    await robot.turn_in_place(cozmo.util.degrees(-5)).wait_for_completed()
+                await robot.drive_straight(cozmo.util.distance_mm(50), cozmo.util.speed_mmps(50)).wait_for_completed()
 
     except KeyboardInterrupt:
         print("")
