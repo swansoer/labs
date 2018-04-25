@@ -11,32 +11,11 @@ import numpy as np
 from cozmo.util import degrees
 import time
 
-# def get_relative_pose(object_pose, reference_frame_pose):
-
-    # #theta = object_pose.rotation.angle_z.radians + reference_frame_pose.rotation.angle_z.radians
-    # #x = object_pose.position.x + reference_frame_pose.position.x
-    # #y = object_pose.position.y + reference_frame_pose.position.y
-    # #z = object_pose.position.z + reference_frame_pose.position.z
-    # #return cozmo.util.Pose(x,y,z,angle_z=cozmo.util.radians(theta))
-    
-    # #theta = object_pose.rotation.angle_z.radians - reference_frame_pose.rotation.angle_z.radians
-    # #transform = np.matrix([[np.cos(theta), -1*np.sin(theta) ,0, object_pose.position.x],[np.sin(theta), np.cos(theta), 0, object_pose.position.y],[0, 0, 1, object_pose.position.z],[0, 0, 0, 1]])
-    # #object = np.matrix([[reference_frame_pose.position.x],[reference_frame_pose.position.y],[reference_frame_pose.position.z],[0]])
-    # #out = transform * object
-    
-    
-    # #theta = reference_frame_pose.rotation.angle_z.radians - object_pose.rotation.angle_z.radians
-    # theta = object_pose.rotation.angle_z.radians - reference_frame_pose.rotation.angle_z.radians
-    # transform = np.matrix([[np.cos(theta), np.sin(theta) ,0, reference_frame_pose.position.x],[-1*np.sin(theta), np.cos(theta), 0, reference_frame_pose.position.y],[0, 0, 1, reference_frame_pose.position.z],[0, 0, 0, 1]])
-    # object = np.matrix([[object_pose.position.x],[object_pose.position.y],[object_pose.position.z],[0]])
-    # out = transform * object
-    
-    # return cozmo.util.Pose(out[0],out[1],out[2],angle_z=cozmo.util.radians(theta))
-    
-
     
 def get_relative_pose(object_pose, reference_frame_pose):
 
+    # we know T_0_1 and T_0_2 so we can find T_1_2 by taking inverse of T_0_1 and mltipying with T_0_2.  Then the 
+    # last column has the relative pose translations and the angle is the difference between the two
     theta_0_1 = reference_frame_pose.rotation.angle_z.radians
     p_01 = reference_frame_pose.position
     theta_0_2 = object_pose.rotation.angle_z.radians
