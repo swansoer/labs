@@ -36,12 +36,12 @@ def move_relative_to_cube(robot: cozmo.robot.Robot):
         except asyncio.TimeoutError:
             print("Didn't find a cube")
 
-    desired_pose_relative_to_cube = Pose(0*math.sin(cube.pose.rotation.angle_z.radians), 100*math.cos(cube.pose.rotation.angle_z.radians), 0, angle_z=degrees(90))
+    desired_pose_relative_to_cube = Pose(100*-1*math.sin(cube.pose.rotation.angle_z.radians), 100*math.cos(cube.pose.rotation.angle_z.radians), 0, angle_z=degrees(90))
     final_pose = cube.pose + desired_pose_relative_to_cube
     print("Found a point, pose in the robot coordinate frame: %s" % final_pose)
     relative_pose = get_relative_pose(final_pose, robot.pose)
     print("Found a relative pose, pose in the robot coordinate frame: %s" % relative_pose)
-    my_go_to_pose3(robot, relative_pose.position.x, relative_pose.position.y, relative_pose.rotation.angle_z.degrees)
+    my_go_to_pose1(robot, relative_pose.position.x, relative_pose.position.y, relative_pose.rotation.angle_z.degrees)
     
     # ####
     # TODO: Make the robot move to the given desired_pose_relative_to_cube.
