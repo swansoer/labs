@@ -2,13 +2,13 @@ from __future__ import absolute_import
 
 import threading
 import time
+import sys
 
 from grid import CozGrid
 from particle import Particle, Robot
 from setting import *
 from particle_filter import *
 from utils import *
-
 
 # map file
 Map_filename = "map_test.json"
@@ -42,31 +42,43 @@ Err_rot = 10
     But note that in real grading we will use *another* 5 different circles, 
     so don't try to hack anything!
 """
-# example circle 1
-Robot_init_pose = (6, 3, 0)
-Dh_circular = 10
-Robot_speed = 0.5 
-"""
-# example circle 2
-Robot_init_pose = (5, 1, 0)
-Dh_circular = 6
-Robot_speed = 0.5 
+if len(sys.argv) == 1 or sys.argv[1] == '1':
+    print("Using circle 1")
+    # example circle 1
+    Robot_init_pose = (6, 3, 0)
+    Dh_circular = 10
+    Robot_speed = 0.5 
+elif sys.argv[1] == '2':
+    print("Using circle 2")
+    # example circle 2
+    Robot_init_pose = (5, 1, 0)
+    Dh_circular = 6
+    Robot_speed = 0.5 
 
-# example circle 3
-Robot_init_pose = (5, 4, 0)
-Dh_circular = 20
-Robot_speed = 0.3
+elif sys.argv[1] == '3':
+    print("Using circle 3")
+    # example circle 3
+    Robot_init_pose = (5, 4, 0)
+    Dh_circular = 20
+    Robot_speed = 0.3
 
-# example circle 4
-Robot_init_pose = (3, 2, 0)
-Dh_circular = 20
-Robot_speed = 0.3
+elif sys.argv[1] == '4':
+    print("Using circle 4")
+    # example circle 4
+    Robot_init_pose = (3, 2, 0)
+    Dh_circular = 20
+    Robot_speed = 0.3
 
-# example circle 5
-Robot_init_pose = (9, 9, 180)
-Dh_circular = 15
-Robot_speed = 0.5
-"""
+elif sys.argv[1] == '5':
+    print("Using circle 5")
+    # example circle 5
+    Robot_init_pose = (9, 9, 180)
+    Dh_circular = 15
+    Robot_speed = 0.5
+
+else:
+    print("Invalid choice, exiting")
+    exit()
 
 # move robot circular
 # if in collsion throw error
@@ -190,3 +202,4 @@ if __name__ == "__main__":
     print("Max rotational error :", max_err_rot, "deg")
 
     print("\nscore =", score)
+    sys.exit(score)

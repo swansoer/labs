@@ -28,6 +28,15 @@ def diff_heading_deg(heading1, heading2):
 		dh += 360
 	return dh
 
+    # heading angle difference = heading1 - heading2 
+# return value always in range (-180, 180] in deg
+def add_heading_deg(heading1, heading2):
+	dh = heading1 + heading2
+	while dh > 180:
+		dh -= 360
+	while dh <= -180:
+		dh += 360
+	return dh
 
 def compute_mean_pose(particles, confident_dist=1):
     """ Compute the mean pose for all particles
