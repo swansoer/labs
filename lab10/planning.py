@@ -89,7 +89,7 @@ def heuristic(current, goal):
         current -- current cell
         goal -- desired goal cell
     """
-    # First tried manhattan distance but wasn't good enough so did direct distance    
+    # First tried manhattan distance but wasn't good enough so did direct distance which makes sense since the robot came move diagonally   
     #return abs(current[0]-goal[0])+abs(current[1]-goal[1])
     return math.sqrt((current[0]-goal[0])**2+(current[1]-goal[1])**2)
 
