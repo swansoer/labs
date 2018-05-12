@@ -8,8 +8,11 @@ import threading
 from queue import PriorityQueue
 import math
 import cozmo
+import time
+import sys
+import numpy as np 
 
-
+from cozmo.util import degrees, Angle, Pose, distance_mm, speed_mmps
 
 def astar(grid, heuristic):
     """Perform the A* search algorithm on a defined grid
@@ -94,6 +97,36 @@ def heuristic(current, goal):
     return math.sqrt((current[0]-goal[0])**2+(current[1]-goal[1])**2)
 
 
+def cell_to_pose(cell,scale,angle=None):
+        if angle is not None:
+            angle = degrees(angle)
+        pose = cozmo.util.Pose(cell[0]*scale+scale/2,cell[1]*scale+scale/2,0,angle_z = angle)
+        return pose
+
+def pose_to_cell(pose,scale):
+    x = int(round(pose.position.x/scale,0))
+    y = int(round(pose.position.y/scale,0))
+    3print("cube is at ",x,y)
+    return (x,y)
+
+def get_finish_from_pose(pose,scale):
+    angle = pose.rotation.angle_z.degrees
+    addition = None
+    if angle > -45 and angle < 45:
+        addition = (-1,0)
+    elif angle > 45 and angle < 135:
+        addition = (0,-1)
+    elif  angle < -45 and angle > -135:
+        addition = (0,1)
+    else:
+        addition = (1,0)
+    
+    block = pose_to_cell(pose,scale)
+    return (block[0]+addition[0],block[1]+addition[1])
+
+def get_angle(current, next):
+    return np.rad2deg(np.arctan(float(next[1]-current[1])/float(next[0]-current[0])))
+    
 def cozmoBehavior(robot: cozmo.robot.Robot):
     """Cozmo search behavior. See assignment description for details
 
@@ -107,11 +140,73 @@ def cozmoBehavior(robot: cozmo.robot.Robot):
     """
         
     global grid, stopevent
-    
+    #robot.pose = Pose(0,0,0,angle_z = degrees(0))
+    scale = grid.getScale()
+    start = grid.getStart()
+    #print("Start %i,%i",start[0],start[1])
+    #print("Scale %i",scale)
+    #print(robot.pose)
+    pose = cell_to_pose(start,scale,0)
+    #print(pose)
+    robot.go_to_pose(cell_to_pose(start,scale,0)).wait_for_completed()
+    cubes_seen = set()
     while not stopevent.is_set():
-        pass # Your code here
-
-
+        cube = None
+        count = 0
+        while(cube is None):
+            try:
+                cube = robot.world.wait_for_observed_light_cube(timeout=1)
+            except Exception:
+                robot.turn_in_place(cozmo.util.degrees(15)).wait_for_completed()
+                count += 1
+            if count >= 6:
+                start = (start[0]+1,start[1]+1)
+                grid.setStart(start)
+                robot.go_to_pose(cell_to_pose(start,scale,0)).wait_for_completed()
+                count = 0
+        
+        cubes_seen.add(cube.cube_id)
+        finalanlge = cube.pose.rotation.angle_z.degrees
+        robot.say_text("I see the cube").wait_for_completed()
+        #print(cube.pose)
+        block = pose_to_cell(cube.pose,scale)
+        grid.addObstacle(block)
+        finish = get_finish_from_pose(cube.pose,scale)
+        grid.addGoal(finish)
+        astar(grid,heuristic)
+        
+        
+        newpath = True
+        while newpath:
+            newpath = False
+            path = grid.getPath()
+            last = path[0]
+            for i in range(len(path)):
+                angle = 0
+                if i+1 < len(path):
+                    angle = get_angle(path[i],path[i+1])
+                robot.go_to_pose(cell_to_pose(path[i],scale,angle)).wait_for_completed()
+                newcube = None
+                try:
+                    newcube = robot.world.wait_for_observed_light_cube(timeout=1)
+                except Exception:
+                    print("don't do anything")
+                if newcube is not None and newcube.cube_id not in cubes_seen:
+                    cubes_seen.add(newcube.cube_id)
+                    robot.say_text("I found a new cube").wait_for_completed()
+                    grid.setStart(path[i])
+                    grid.addObstacle(pose_to_cell(newcube.pose,scale))
+                    grid.clearPath()
+                    grid.clearVisited()
+                    astar(grid,heuristic)
+                    newpath = True
+                    break
+            
+            if not newpath:
+                robotangle = robot.pose.rotation.angle_z.degrees
+                robot.turn_in_place(cozmo.util.degrees(finalanlge-robotangle)).wait_for_completed()
+        break
+        stopevent.set()        
         
 class Node:
     def __init__(self, coord,h=0,g=0):

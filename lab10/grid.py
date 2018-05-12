@@ -290,3 +290,5 @@ class CozGrid:
         self.changes.append('path')
         self.lock.release()
 
+    def getScale(self):
+        return self.scale
