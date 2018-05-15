@@ -106,7 +106,7 @@ def cell_to_pose(cell,scale,angle=None):
 def pose_to_cell(pose,scale):
     x = int(round(pose.position.x/scale,0))
     y = int(round(pose.position.y/scale,0))
-    3print("cube is at ",x,y)
+    #print("cube is at ",x,y)
     return (x,y)
 
 def get_finish_from_pose(pose,scale):
