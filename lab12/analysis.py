@@ -24,38 +24,51 @@ def question2():
     answerNoise = 0.2
     return answerDiscount, answerNoise
 
+# These were determined through trial and error while thinking about what parameters
+# values would yield the asked for response
 def question3a():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    # high discount means it wants to leave early, low noise means will take a risk with
+    # the cliff and no living reward means staying alive is no benefit
+    answerDiscount = .01
+    answerNoise = 0
+    answerLivingReward = 0
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3b():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    # moderate discount means it wants to leave early noise menas it wants to avoid the cliff
+    # and a living bonus means it will want to stay alive a bit but not necessarily a long time
+    # meaning going up and around is better
+    answerDiscount = .1
+    answerNoise = .1
+    answerLivingReward = .6
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3c():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    # a small discount means its willing to travel farther for the bigger reward. low noise
+    # means its willing to risk the cliff and no living reward means it has no reason to stick around
+    answerDiscount = 0.9
+    answerNoise = 0
+    answerLivingReward = 0
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3d():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    # a small discount means its willing to travel farther for the bigger reward. moderate noise means
+    # it doesn't want to go along the cliff and a smaller living reward means it wants to terminate eventually
+    answerDiscount = .9
+    answerNoise = .5
+    answerLivingReward = .2
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3e():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    # large noise means it wants to avoid the cliff and generally try moving toward the boarder, a small discount and 
+    # a large living reward means that it wants to stick around as long as possible
+    answerDiscount = .9
+    answerNoise = .9
+    answerLivingReward = 10
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
