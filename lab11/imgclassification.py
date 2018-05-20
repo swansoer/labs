@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 
 ##############
-#### Your name:
+#### Your name: Eric Swanson
 ##############
 
 import numpy as np
 import re
 from sklearn import svm, metrics
 from skimage import io, feature, filters, exposure, color
+import _pickle
 
 class ImageClassifier:
     
@@ -40,8 +41,8 @@ class ImageClassifier:
         feature_data_list = []
         for i in range(0,data.shape[0]):
             img = data[i,:,:,0]
-            #img  = filters.gaussian(img,preserve_range=True)
-            features = feature.hog(img)
+            img  = filters.gaussian(img,preserve_range=True)
+            features = feature.hog(img, block_norm='L2', orientations=9, pixels_per_cell=(8, 8), cells_per_block=(3, 3))
             feature_data_list.append(features)
 
         
@@ -117,7 +118,8 @@ def main():
     print("Confusion Matrix:\n",metrics.confusion_matrix(test_labels, predicted_labels))
     print("Accuracy: ", metrics.accuracy_score(test_labels, predicted_labels))
     print("F1 score: ", metrics.f1_score(test_labels, predicted_labels, average='micro'))
-
+    #with open('.\svc_image_classifier.pk1', 'wb') as fid:
+    #    _pickle.dump(img_clf, fid)
 
 if __name__ == "__main__":
     main()
