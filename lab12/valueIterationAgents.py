@@ -104,7 +104,8 @@ class ValueIterationAgent(ValueEstimationAgent):
         possibleActions = self.mdp.getPossibleActions(state)
 
         # Loop through each possible action and calculate the 
-        # QValue for it.  The max QValue corresponds to the best action
+        # QValue for it.  The max QValue corresponds to the best action, if there is a tie for 
+        # the best action per the QValue then whichever action was computed first is returned
         bestAction = None
         maxValue = None
         for possibleAction in possibleActions:

@@ -27,11 +27,12 @@ def question2():
 # These were determined through trial and error while thinking about what parameters
 # values would yield the asked for response
 def question3a():
-    # high discount means it wants to leave early, low noise means will take a risk with
+    # high discount means it wants to leave early, no noise means will take a risk with
     # the cliff and no living reward means staying alive is no benefit
-    answerDiscount = .01
-    answerNoise = 0
-    answerLivingReward = 0
+    # had to put in a tiny tiny amount of noise before it would take the bottom path
+    answerDiscount = .1
+    answerNoise = 0.001
+    answerLivingReward = 0.1
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
@@ -49,8 +50,8 @@ def question3c():
     # a small discount means its willing to travel farther for the bigger reward. low noise
     # means its willing to risk the cliff and no living reward means it has no reason to stick around
     answerDiscount = 0.9
-    answerNoise = 0
-    answerLivingReward = 0
+    answerNoise = 0.05
+    answerLivingReward = 0.05
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
