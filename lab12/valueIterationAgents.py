@@ -45,7 +45,6 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
-        print("my code")
         # loop for as many iterations as was specified
         for k in range(self.iterations):
             # Need to keep these seperate so we don't update some states while others
