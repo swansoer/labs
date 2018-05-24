@@ -45,6 +45,7 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
+        print("my code")
         # loop for as many iterations as was specified
         for k in range(self.iterations):
             # Need to keep these seperate so we don't update some states while others
@@ -63,10 +64,11 @@ class ValueIterationAgent(ValueEstimationAgent):
                     if maxQValue == None or maxQValue < qvalue:
                         maxQValue = qvalue
                 
-                # some cases seem to return None which cause an error so put 0 in that case
-                if maxQValue == None:
-                    maxQValue = 0
-                currentQValues[state] = maxQValue
+                # Don't store the TERMINAL_STATE QValue since its always None and not needed
+                if state != "TERMINAL_STATE":
+                    currentQValues[state] = maxQValue
+                
+            # store the new qvalues
             self.values = currentQValues
             
     def getValue(self, state):
@@ -104,8 +106,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         possibleActions = self.mdp.getPossibleActions(state)
 
         # Loop through each possible action and calculate the 
-        # QValue for it.  The max QValue corresponds to the best action, if there is a tie for 
-        # the best action per the QValue then whichever action was computed first is returned
+        # QValue for it.  The max QValue corresponds to the best action, returns None if no actins
         bestAction = None
         maxValue = None
         for possibleAction in possibleActions:
